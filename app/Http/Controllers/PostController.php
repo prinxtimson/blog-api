@@ -8,9 +8,20 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/post",
+     *     summary="List all posts",
+     *     operationId="index",
+     *     tags={"Post"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of posts",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(type="object", ref="#/components/schemas/PostData")
+     *         ),
+     *     )
+     * )
      */
     public function index()
     {
@@ -20,10 +31,22 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @OA\Post(
+     *     path="/api/post",
+     *     summary="New blog post",
+     *     operationId="store",
+     *     tags={"Post"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Post object",
+     *         @OA\JsonContent(ref="#/components/schemas/PostRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of posts",
+     *         @OA\JsonContent( ref="#/components/schemas/PostData"),
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -34,10 +57,24 @@ class PostController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/post/{id}",
+     *     summary="Get blog post by ID",
+     *     operationId="show",
+     *     tags={"Post"},
+     *   @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the post you want to get",
+     *         required=true,
+     *         @OA\Schema(type="integer", minimum=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Single Post",
+     *         @OA\JsonContent( ref="#/components/schemas/PostData"),
+     *     )
+     * )
      */
     public function show($id)
     {
@@ -45,11 +82,29 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Put(
+     *     path="/api/post/{id}",
+     *     summary="Update blog post",
+     *     operationId="update",
+     *     tags={"Post"},
+     *   @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the post you want to get",
+     *         required=true,
+     *         @OA\Schema(type="integer", minimum=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Post object",
+     *         @OA\JsonContent(ref="#/components/schemas/PostRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Updated post",
+     *         @OA\JsonContent( ref="#/components/schemas/PostData"),
+     *     )
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -61,11 +116,26 @@ class PostController extends Controller
         return $post;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * @OA\Delete(
+     *     path="/api/post/{id}",
+     *     summary="Delete blog post",
+     *     operationId="destroy",
+     *     tags={"Post"},
+     *   @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the post you want to get",
+     *         required=true,
+     *         @OA\Schema(type="integer", minimum=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Delete Post",
+     *         @OA\JsonContent(type="integer", example=1)
+     *         ),
+     *     )
+     * )
      */
     public function destroy($id)
     {
@@ -75,4 +145,24 @@ class PostController extends Controller
 
         return $deleted;
     }
+
+    /**
+     * @OA\Components(
+     *     @OA\Schema(
+     *         schema="PostData",
+     *         @OA\Xml(name="PostData"),
+     *         @OA\Property(property="id", type="integer", example="1"),
+     *         @OA\Property(property="title", type="string", example="First Post"),
+     *         @OA\Property(property="body", type="string", example="This is my first post"),
+     *         @OA\Property(property="created_at", type="string",  example="2022-08-22T21:06:02.000000Z"),
+     *         @OA\Property(property="updated_at", type="string", example="2022-08-22T21:06:02.000000Z"),
+     *     ),
+     *     @OA\Schema(
+     *         schema="PostRequest",
+     *         @OA\Xml(name="PostData"),
+     *         @OA\Property(property="title", type="string", example="First Post"),
+     *         @OA\Property(property="body", type="string", example="This is my first post"),
+     *     )
+     * )
+     */
 }
